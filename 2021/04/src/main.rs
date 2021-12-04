@@ -76,7 +76,7 @@ fn fill_boards() -> (BingoNumbers, Boards, usize) {
         }
 
         line.split_whitespace().for_each(|s| {
-            boards[boards_idx] = s.to_owned();
+            boards[boards_idx] = s.to_string();
             boards_idx += 1;
         });
     }
@@ -104,10 +104,10 @@ fn find_bingo(
             for row_nr in 0..HORIZ_SIZE {
                 let col_nr = row_nr;
                 if is_row_checked(&boards_check, board_nr, row_nr) {
-                    let res = calc_result(boards, board_nr, &boards_check, &number.to_owned());
+                    let res = calc_result(boards, board_nr, &boards_check, number);
                     return Ok((board_nr, row_nr, Direction::Row, res));
                 } else if is_col_checked(&boards_check, board_nr, col_nr) {
-                    let res = calc_result(boards, board_nr, &boards_check, &number.to_owned());
+                    let res = calc_result(boards, board_nr, &boards_check, number);
                     return Ok((board_nr, col_nr, Direction::Col, res));
                 }
             }
@@ -126,7 +126,7 @@ fn find_last_bingo(
     let mut boards_check = vec![false; BOARD_SIZE * BOARDS_MAX];
     let mut boards_finished = vec![false; BOARDS_MAX];
     let mut last_board = None;
-    let mut last_number = String::new();
+    let mut last_number: &str = "";
 
     for number in numbers {
         for n in 0..boards.len() {
@@ -159,14 +159,14 @@ fn find_last_bingo(
             .map(|finished| if *finished { 1usize } else { 0usize })
             .sum::<usize>();
         if finished_count == board_count {
-            last_number = number.to_owned();
+            last_number = number;
             break;
         }
     }
 
     if let Some(board_data) = last_board {
         let (board_nr, row_nr, direction) = board_data;
-        let res = calc_result(boards, board_nr, &boards_check, &last_number);
+        let res = calc_result(boards, board_nr, &boards_check, last_number);
         return Ok((board_nr, row_nr, direction, res));
     }
     Err("no last bingo found".into())
