@@ -213,11 +213,9 @@ fn basin_sizes(points: &PointsLow, map_yx_niners: &MapNiner) -> Vec<usize> {
 
                 basin_points.push(bp); // push after neighbours check
 
-                if !neighbours.is_empty() {
-                    neighbours.iter().for_each(|p| {
-                        walk_neighbours(basin_points, p.x, p.y, map_yx_niners);
-                    });
-                }
+                neighbours.iter().for_each(|p| {
+                    walk_neighbours(basin_points, p.x, p.y, map_yx_niners);
+                });
             }
         }
     }
